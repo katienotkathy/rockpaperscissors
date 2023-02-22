@@ -1,4 +1,18 @@
-game()
+const rockSelected = document.querySelector('#rock');
+rockSelected.addEventListener('click', function() {game("rock")}); //y i have 2 do dis?
+// because the compiler/listener will just run a function if there is a function call written
+// the anonymous function (or an arrow fn) is just defining a function, not calling it
+
+
+
+const paperSelected = document.querySelector('#paper');
+paperSelected.addEventListener('click', function() {game("paper")});
+
+const scissorsSelected = document.querySelector('#scissors');
+scissorsSelected.addEventListener("click", function() {game("scissors")});
+
+let playerScore = 0;
+let computerScore = 0;
 
 function getComputerChoice() {
     const possiblePlays = [
@@ -18,37 +32,47 @@ function playRound(playerSelection,computerSelection) {
     if ((playerSelection == 'rock' && computerSelection == 'scissors')
     || (playerSelection == 'scissors' && computerSelection == 'paper')
     || (playerSelection == 'paper' && computerSelection == 'rock')) {
-        return 1;
+        return "player";
     }
     else if ((playerSelection == 'rock' && computerSelection == 'paper')
     || (playerSelection == 'scissors' && computerSelection == 'rock')
     || (playerSelection == 'paper' && computerSelection == 'scissors')) {
-        return 0;
+        return "computer";
     }
     else if ((playerSelection == 'rock' && computerSelection == 'rock')
     || (playerSelection == 'scissors' && computerSelection == 'scissors')
     || (playerSelection == 'paper' && computerSelection == 'paper')) {
-        return 0;
+        return "tie";
     }
 }
 
-function game() {
-    var playerScore = 0;
-    var computerScore = 0;
-    for (let i = 0; i < 5; i++) {
-        let instructions = "Rock, paper, or scissors?";
-        let playerSelection = prompt(instructions,"Pick one! No typos :)");
-        let computerSelection = getComputerChoice();
-        didPlayerWin = playRound(playerSelection,computerSelection);
-        playerScore = playerScore + didPlayerWin;
-        console.log(`Player chose ${playerSelection}. Computer chose ${computerSelection}`);
-        console.log(playerScore);
-        didPlayerWin ? console.log(`You won round ${i+1} !`) : console.log(`You did not win round ${i+1}`);
+function game(playerSelection) {
+    let computerSelection = getComputerChoice();
+    winner = playRound(playerSelection,computerSelection);
+    if (winner == "player") {
+        playerScore += 1;
     }
-    if (playerScore >= 3) {
-        console.log("You won the whole game!");
+    else if (winner == "computer") {
+        computerScore += 1;
     }
-    else {
-        console.log("You did not win the whole game :(");
+    
+    
+    let div = document.createElement("div","results");
+    let results = document.querySelector('.results');
+
+    div.textContent = `Player chose ${playerSelection}. Computer chose ${computerSelection}. Player score = ${playerScore}. Computer score = ${computerScore}`;
+    results.appendChild(div);
+
+    if (playerScore == 5) {
+        div.textContent = ('Winner, winner, chicken dinner! You won!');
+        results.appendChild(div);
+        playerScore = 0;
+        computerScore = 0;
+    }
+    else if (computerScore == 5) {
+        div.textContent = ('Bummer :( You lost!');
+        results.appendChild(div);
+        playerScore = 0;
+        computerScore = 0;
     }
 }
